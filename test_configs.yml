@@ -1,0 +1,13 @@
+---
+base_url: 
+
+creds: 
+  user: 
+  pass:
+
+table_map:
+  script_include:
+    name: 
+    table: 
+    sysid: 
+    field:

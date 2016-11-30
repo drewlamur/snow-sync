@@ -1,0 +1,42 @@
+require "logger"
+require "./sync_util.rb"
+
+@util = SnowSync::SyncUtil.new
+
+yield_options = {
+
+  object: ::Logger.new(STDERR),
+
+  start: proc do |logger|
+    logger.level = Logger::INFO
+    @util.start_sync
+  end,
+  
+  stop: proc do |logger| 
+    logger.info "Guard::Yield - Done!"
+  end,
+
+  run_on_modifications: proc do |log, _, files|
+    log.info "!!: #{files * ','}"
+    @util.push_modifications(files)
+  end,
+
+  run_on_additions: proc do |log, _, files| 
+    log.info "++: #{files * ','}" 
+  end,
+
+  run_on_removals: proc do |log, _, files|
+    log.warn "xx: #{files * ','}"
+  end,
+
+}
+
+# method initializes the watcher
+def guard_watch(yield_options)
+  guard :yield, yield_options do
+    watch(/^sync\//)
+  end
+end
+
+# called when guard starts
+guard_watch(yield_options)
