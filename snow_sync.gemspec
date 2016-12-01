@@ -14,6 +14,7 @@ Gem::Specification.new do |spec|
   spec.license  = "MIT"
 
   spec.add_development_dependency "bundler", "~> 1.13"
+  spec.add_development_dependency "byebug", "~> 5.0.0"
   spec.add_development_dependency "facets", "~> 3.1"
   spec.add_development_dependency "guard", "~> 2.14"
   spec.add_development_dependency "guard-yield", "~> 0.1.0"
@@ -26,6 +27,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec-mocks", "~> 3.5.0"
   spec.add_development_dependency "rspec", "~> 3.0"
 
-  # ensure the gem is built out of versioned files
+  # ensure gem is built out of versioned files
   spec.files = Dir['Rakefile', '{bin,lib,spec}/**/*', 'README*', 'LICENSE*'] & `git ls-files -z`.split("\0")
 end
