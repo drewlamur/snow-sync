@@ -21,8 +21,10 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "libnotify", "~> 0.9.1"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rest-client", "~> 2.0"
+  spec.add_development_dependency "rspec-core", "~> 3.5.0"
+  spec.add_development_dependency "rspec-expectation", "~> 3.5.0"
+  spec.add_development_dependency "rspec-mocks", "~> 3.5.0"
   spec.add_development_dependency "rspec", "~> 3.0"
-  #spec.add_development_dependency "ruby_gntp", "~> 1.13"
 
   # ensure the gem is built out of versioned files
   spec.files = Dir['Rakefile', '{bin,lib,spec}/**/*', 'README*', 'LICENSE*'] & `git ls-files -z`.split("\0")
