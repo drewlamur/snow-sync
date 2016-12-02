@@ -1,6 +1,7 @@
 require File.expand_path("../lib/snow_sync/version.rb", __FILE__)
 
 Gem::Specification.new do |spec|
+
   spec.name    = "snow_sync"
   spec.version = SnowSync::VERSION
   spec.date    = Date.today.to_s
@@ -13,20 +14,18 @@ Gem::Specification.new do |spec|
   spec.homepage = "https://rubygems.org/gems/snow_sync"
   spec.license  = "MIT"
 
-  spec.add_development_dependency "bundler", "~> 1.13"
-  spec.add_development_dependency "byebug", "~> 5.0.0"
-  spec.add_development_dependency "facets", "~> 3.1"
-  spec.add_development_dependency "guard", "~> 2.14"
+  spec.add_development_dependency "bundler", "~> 1.13.6"
+  spec.add_development_dependency "byebug", "~> 9.0.6"
+  spec.add_development_dependency "facets", "~> 3.1.0"
+  spec.add_development_dependency "guard", "~> 2.14.0"
   spec.add_development_dependency "guard-yield", "~> 0.1.0"
-  spec.add_development_dependency "json", "~> 1.8", ">= 1.8.3"
+  spec.add_development_dependency "json", "~> 1.8.0", ">= 1.8.3"
   spec.add_development_dependency "libnotify", "~> 0.9.1"
-  spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "rest-client", "~> 2.0"
-  spec.add_development_dependency "rspec-core", "~> 3.5.0"
-  spec.add_development_dependency "rspec-expectations", "~> 3.4.0"
-  spec.add_development_dependency "rspec-mocks", "~> 3.5.0"
-  spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "rake", "~> 10.0.0"
+  spec.add_development_dependency "rest-client", "~> 2.0.0"
+  spec.add_development_dependency "rspec", "~> 3.5.0"
 
   # ensure gem is built out of versioned files
   spec.files = Dir['Rakefile', '{bin,lib,spec}/**/*', 'README*', 'LICENSE*'] & `git ls-files -z`.split("\0")
+
 end
