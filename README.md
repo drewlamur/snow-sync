@@ -55,8 +55,7 @@ cd <path>/gems/snow_sync-<version>
 touch test_configs.yml
 vim /spec/sync_util_spec.rb
 ```
-Add a test script record to your instance (ex: a script include)
-Add your test configs sync_util_spec.rb
+Add a test record to your instance (ex: script include) & update the test configs in spec/sync_util_spec.rb
 
 ```ruby
 rspec spec/sync_util_spec.rb
