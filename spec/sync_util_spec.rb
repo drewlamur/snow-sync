@@ -123,7 +123,7 @@ describe "table_lookup" do
 
   it "should return configured SN table" do
     setup_test_config
-    table_map = util.table_lookup("sync/script_include/test_class.rb")
+    table_map = util.table_lookup("sync/script_include/test_class.js")
     expect(table_map.keys).to eq ["name", "table", "sysid", "field"]
     expect(table_map["table"]).to eq "sys_script_include"
   end
@@ -155,7 +155,7 @@ describe "merge_update" do
 
 end
 
-## --> itegration tests
+## --> integration tests
 describe "setup_sync_directories" do
  
   let! :util do
