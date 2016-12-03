@@ -18,9 +18,9 @@ gem install bundler
 
 ```bash
 cd <path>/gems/snow_sync-<version>
-touch Gemfile
-vim Gemfile
 ```
+
+Create a Gemfile and add the following:
 
 ```ruby
 source 'https://rubygems.org'
@@ -33,16 +33,18 @@ gem 'libnotify', '~> 0.9.1'
 gem 'rake', '~> 10.0.0'
 gem 'rest-client', '~> 2.0.0'
 gem 'rspec', '~> 3.5.0'
+```
 
+```bash
 bundle install
 ```
 
 ```bash
 cd /lib/snow_sync
-vim configs.yml
 ```
 
-Add your configs -- be sure to append /api/now/table/ to the base_url
+* Setup the configs in the configs.yml
+* Append /api/now/table/ to the base_url
 
 ```bash
 guard -i
@@ -52,10 +54,11 @@ guard -i
 
 ```bash
 cd <path>/gems/snow_sync-<version>
-touch test_configs.yml
-vim /spec/sync_util_spec.rb
 ```
-Add a test record to your instance (ex: script include) & update the test configs in spec/sync_util_spec.rb
+
+* Create a test_configs.yml file
+* Create a test record in the instance (ex: a test script include)
+* Setup the test configs
 
 ```ruby
 rspec spec/sync_util_spec.rb
