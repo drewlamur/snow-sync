@@ -33,6 +33,7 @@ gem 'libnotify', '~> 0.9.1'
 gem 'rake', '~> 10.0.0'
 gem 'rest-client', '~> 2.0.0'
 gem 'rspec', '~> 3.5.0'
+gem 'thor', '~> 0.19.1'
 ```
 
 ```bash

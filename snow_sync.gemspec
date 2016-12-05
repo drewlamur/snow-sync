@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.date    = Date.today.to_s
 
   spec.summary = "SnowSync is a file sync utility tool and API which provides a bridge for off platform ServiceNow development using an IDE or text editor locally."
-  spec.description = "SnowSync syncronizes configured fields (scripts) for a ServiceNow instance locally, then watches for file changes and syncs back script changes to the corresponding record."
+  spec.description = "SnowSync syncronizes configured fields (scripts) for a ServiceNow instance locally, then watches for file changes and syncs back changes to the corresponding record."
 
   spec.authors  = ["Andy Wallace"]
   spec.email    = "sailingthetechseas@gmail.com"
@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0.0"
   spec.add_development_dependency "rest-client", "~> 2.0.0"
   spec.add_development_dependency "rspec", "~> 3.5.0"
+  spec.add_development_dependency "thor", "~> 0.19.1"
 
   # ensure gem is built out of versioned files
   spec.files = Dir['Rakefile', '{bin,lib,spec}/**/*', 'README*', 'LICENSE*'] & `git ls-files -z`.split("\0")
