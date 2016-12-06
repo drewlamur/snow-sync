@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0.0"
   spec.add_development_dependency "rest-client", "~> 2.0.0"
   spec.add_development_dependency "rspec", "~> 3.5.0"
-  spec.add_development_dependency "thor", "~> 0.19.1"
+  spec.add_development_dependency "thor", "0.19.1"
 
   # ensure gem is built out of versioned files
   spec.files = Dir['Rakefile', '{bin,lib,spec}/**/*', 'README*', 'LICENSE*'] & `git ls-files -z`.split("\0")
