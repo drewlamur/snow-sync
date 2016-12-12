@@ -1,20 +1,5 @@
 require "spec_helper"
 
-def setup_test_config
-  util.configs["base_url"] = "<base url>"
-  util.configs["creds"]["user"] = "<username>"
-  util.configs["creds"]["pass"] = "<password>"
-  util.configs["table_map"]["script_include"]["name"] = "<js class or script name>"
-  util.configs["table_map"]["script_include"]["table"] = "<table>"
-  util.configs["table_map"]["script_include"]["sysid"] = "<sys id>"
-  util.configs["table_map"]["script_include"]["field"] = "<field>" 
-end
-
-def setup_test_directory
-  FileUtils.mkdir_p("sync")
-  FileUtils.mkdir_p("sync/test_sub_dir")
-end
-
 ## --> unit tests
 describe "utility object" do
 
@@ -67,7 +52,8 @@ describe "create_file" do
   end
 
   it "should create a file" do
-    setup_test_directory
+    FileUtils.mkdir_p("sync")
+    FileUtils.mkdir_p("sync/test_sub_dir")
     json = { "property" => "value" }
     name = "TestClass".snakecase
     path = proc do
@@ -85,18 +71,29 @@ describe "check_required_configs" do
 
   let :util do
     SnowSync::SyncUtil.new(opts = "test")
-  end 
+  end
 
-  it "should raise an exception when there are no credentials" do
-    #user, no password
-    util.configs["creds"]["user"] = "test.user"
-    expect{util.check_required_configs}.to raise_error(/Please check your credentials and tables to sync/)
+  it "should raise an exception when there is no config path" do
+    util.configs["conf_path"] = "test/bad/path"
+    expect{util.check_required_configs}.to raise_error(/Please check the configuration path, credentials or table to sync/)
+  end
+
+  it "should raise an exception when there is no username" do
+    util.configs["creds"]["user"] = nil
+    expect{util.check_required_configs}.to raise_error(/Please check the configuration path, credentials or table to sync/)
+  end
+
+  it "should raise an exception when there is no password" do
+    util.configs["creds"]["pass"] = nil
+    expect{util.check_required_configs}.to raise_error(/Please check the configuration path, credentials or table to sync/)
   end
 
   it "should raise an exception when there are no tables mapped" do
-    #table, no attributes
-    util.configs["table_map"]["table"] = "test_table"
-    expect{util.check_required_configs}.to raise_error(/Please check your credentials and tables to sync/)
+    tables = util.configs["table_map"].keys
+    tables.each do |table|
+      util.configs["table_map"][table]["table"] = nil
+      expect{util.check_required_configs}.to raise_error(/Please check the configuration path, credentials or table to sync/)
+    end
   end
 
 end
@@ -122,7 +119,6 @@ describe "table_lookup" do
   end 
 
   it "should return configured SN table" do
-    setup_test_config
     table_map = util.table_lookup("sync/script_include/test_class.js")
     expect(table_map.keys).to eq ["name", "table", "sysid", "field"]
     expect(table_map["table"]).to eq "sys_script_include"
@@ -136,10 +132,9 @@ describe "merge_update" do
     SnowSync::SyncUtil.new(opts = "test")
   end
 
-  #merge_update
   it "should merge updated script with the configs object" do
-    setup_test_directory
-    setup_test_config
+    FileUtils.mkdir_p("sync")
+    FileUtils.mkdir_p("sync/test_sub_dir")
     json = { "property" => "value - with update" }
     name = "TestClass".snakecase
     path = proc do
@@ -163,7 +158,6 @@ describe "setup_sync_directories" do
   end
 
   it "should setup and synchronize field from the SN instance" do
-    setup_test_config
     util.setup_sync_directories
     file = File.open("sync/script_include/test_class.js")
     expect(file.is_a?(Object)).to eq true
@@ -179,7 +173,6 @@ describe "push_modifications" do
   end
 
   it "should push modifications to a configured instance" do
-    setup_test_config
     util.setup_sync_directories
     file = File.open("sync/script_include/test_class.js", "r+")
     lines = file.readlines
@@ -196,7 +189,6 @@ describe "push_modifications" do
     lines = file.readlines
     file.close
     expect(lines[0]).to eq "// test comment -\n"
-    FileUtils.rm_rf("sync")
   end
 
 end

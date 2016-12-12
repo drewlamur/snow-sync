@@ -5,6 +5,9 @@ RSpec.configure do |config|
   require "json"
   require_relative "../lib/snow_sync/sync_util.rb"
 
+  @util = SnowSync::SyncUtil.new(opts = "test")
+  @util.encrypt_credentials
+
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end

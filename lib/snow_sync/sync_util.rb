@@ -9,14 +9,22 @@ module SnowSync
     require 'rest-client'
     require "yaml"
 
-    attr_accessor :configs, :logger
+    attr_accessor :cf, :configs, :logger
+
+    # creates utility object
+    # initializes encapsulated data
+    # opts {string}: optional configuration
 
     def initialize(opts = nil)
-      opts.nil? ? c = "configs.yml" : c = "test_configs.yml"
-      @configs = YAML::load_file(c)
+      opts.nil? ? @cf = "configs.yml" : @cf = "test_configs.yml"
+      @configs = YAML::load_file(@cf)
       @logger = Logger.new(STDERR)
     end
    
+    # creates directory if directory doesn't exist
+    # name {string}: required directory name
+    # &block {object}: optional directory path
+    
     def create_directory(name, &block)
       yield block if block_given?
       unless File.directory?(name)
@@ -24,6 +32,12 @@ module SnowSync
         @logger.info "++: #{name}"
       end
     end
+
+    # creates a js file
+    # logs out the file created
+    # name {string}: required file name
+    # json {object}: required json object
+    # &block {object}: optional file path
 
     def create_file(name, json, &block)
       yield if block_given?
@@ -33,24 +47,65 @@ module SnowSync
       end
     end
 
+    # checks required configurations
+    # raises an exception when required configs aren't found
+
     def check_required_configs
-      no_credentials = @configs["creds"].values.any? do |e|
+      conf_path = File.directory?(@configs["conf_path"])
+      missing_credentials = @configs["creds"].values.any? do |e|
         e.nil?
       end
       keys = @configs["table_map"].keys
       keys.each do |key|
-        no_table_map = @configs["table_map"][key].values.any? do |e|
+        # set as instance variable to reference outside block
+        @missing_table_map = @configs["table_map"][key].values.any? do |e|
           e.nil?
         end
-          if no_credentials or no_table_map
-            raise "EXCEPTION: Required configs missing in configs.yml. " \
-            "Please check your credentials and tables to sync."
-          else
-            return @configs
-          end
+      end
+      if missing_credentials or @missing_table_map or !conf_path
+        raise "EXCEPTION: Required configs missing in configs.yml. " \
+        "Please check the configuration path, credentials or table to sync."
+      else
+        @configs
       end
     end
 
+    # encrypts the configured credentials based on
+    # whether a previous sync setup has occurred
+
+    def encrypt_credentials
+      previous_sync = File.directory?("sync")
+      # sets up the configs object
+      configs_path = @configs["conf_path"] + @cf
+      configs = YAML::load_file(configs_path)
+      if previous_sync
+        # local configuration changes
+        configs = YAML::load_file(configs_path)
+        user = Base64.strict_decode64(@configs["creds"]["user"])
+        pass = Base64.strict_decode64(@configs["creds"]["pass"])
+        userb64 = Base64.strict_encode64(user)
+        passb64 = Base64.strict_encode64(pass)
+        configs["creds"]["user"] = userb64
+        configs["creds"]["pass"] = passb64
+        File.open(configs_path, 'w') { |f| YAML::dump(configs, f) }
+        # object state configuration changes
+        @configs["creds"]["user"] = userb64
+        @configs["creds"]["pass"] = passb64
+      else
+        # local configuration changes
+        userb64 = Base64.strict_encode64(@configs["creds"]["user"])
+        passb64 = Base64.strict_encode64(@configs["creds"]["pass"])
+        configs["creds"]["user"] = userb64
+        configs["creds"]["pass"] = passb64
+        File.open(configs_path, 'w') { |f| YAML::dump(configs, f) }
+        # object state configuration changes
+        @configs["creds"]["user"] = userb64
+        @configs["creds"]["pass"] = passb64
+      end
+    end
+
+    # requests, retrieves, sets up the js script file locally
+    
     def setup_sync_directories
       @configs["table_map"].each do |key, value|
         directory_name = "sync"
@@ -59,12 +114,12 @@ module SnowSync
         sub_directory_name = key
         create_directory(sub_directory_name, &path)
         begin
-          user = @configs["creds"]["user"]
-          pass = @configs["creds"]["pass"]
+          user = Base64.strict_decode64(@configs["creds"]["user"])
+          pass = Base64.strict_decode64(@configs["creds"]["pass"])
           response = RestClient.get(
           "#{@configs['base_url']}#{value["table"]}?sysparm_query=sys_id%3D" + 
           "#{value["sysid"]}%5Ename%3D#{value["name"]}",
-            {:authorization => "#{"Basic " + Base64.strict_encode64("#{user}:#{pass}")}", 
+            {:authorization => "#{"Basic " + Base64.strict_encode64("#{user}:#{pass}")}",
              :accept => "application/json"})
           path = proc { FileUtils.cd(sub_directory_name) }
           @configs[value["table"] + "_response"] = JSON.parse(response)["result"][0]
@@ -78,11 +133,17 @@ module SnowSync
       end
     end
 
+    # classify's a local js file name
+    # file {string}: js file path
+
     def classify(file)
       file = file.split("/").last.split(".").first.camelcase
       file[0] = file[0].capitalize
-      return file
+      file
     end
+
+    # returns the configured SN table hash
+    # file {string}: js file path 
 
     def table_lookup(file)
       @configs["table_map"].select do |key, value|
@@ -92,6 +153,11 @@ module SnowSync
       end
     end
 
+    # replaces the encapsulated table reponse value
+    # with the current js file updates
+    # file {string}: js file path
+    # table_hash {hash}: configured SN table hash
+
     def merge_update(file, table_hash)
       FileUtils.cd(file.split("/")[0..1].join("/"))
       script_body = File.open(file.split("/").last).read
@@ -99,10 +165,20 @@ module SnowSync
       FileUtils.cd("../..")
     end
 
+    # start sync process
+    # check required configurations
+    # encrypt configured credentials
+    # retrieve and set up the script file locally
+
     def start_sync
       check_required_configs
+      encrypt_credentials
       setup_sync_directories
     end
+
+    # merges all js file changes
+    # updates SN instance with the js file changes
+    # files {array}: array of js file paths
 
     def push_modifications(files)
       files.each do |file|
@@ -110,8 +186,8 @@ module SnowSync
         table_hash = table_lookup(file)
         merge_update(file, table_hash)
         begin
-          user = @configs["creds"]["user"]
-          pass = @configs["creds"]["pass"]
+          user = Base64.strict_decode64(@configs["creds"]["user"])
+          pass = Base64.strict_decode64(@configs["creds"]["pass"])
           request_body_map = { 
             table_hash["field"].to_sym => @configs[table_hash["table"] + "_response"] 
           }

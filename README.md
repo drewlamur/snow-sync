@@ -44,12 +44,16 @@ bundle install
 cd /lib/snow_sync
 ```
 
-* Setup the configs in the configs.yml
+* Setup the configurations in the configs.yml
+* Configurations path is <path>/gems/snow_sync-<version>/lib/snow_sync/
 * Append /api/now/table/ to the base_url
 
 ```bash
 guard -i
 ```
+
+Note: if the sync directory is deleted after a previous sync, reset the credential configs in the configs.yml so they can be re-encrypted
+
 
 ## Running the Tests
 
@@ -59,11 +63,15 @@ cd <path>/gems/snow_sync-<version>
 
 * Create a test_configs.yml file
 * Create a test record in the instance (ex: a test script include)
-* Setup the test configs
+* Setup the test configurations in the test_configs.yml
+* Configurations path is <path>/gems/snow_sync-<version>/
+* Append /api/now/table/ to the base_url
 
 ```ruby
 rspec spec/sync_util_spec.rb
 ```
+
+Note: if the sync directory is deleted after a previous sync, reset the credential configs in the test_configs.yml so they can be re-encrypted
 
 ## License
 
