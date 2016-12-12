@@ -45,7 +45,7 @@ cd /lib/snow_sync
 ```
 
 * Setup the configurations in the configs.yml
-* Configurations path is <path>/gems/snow_sync-<version>/lib/snow_sync/
+* Configuration path is the current working directory
 * Append /api/now/table/ to the base_url
 
 ```bash
@@ -64,7 +64,7 @@ cd <path>/gems/snow_sync-<version>
 * Create a test_configs.yml file
 * Create a test record in the instance (ex: a test script include)
 * Setup the test configurations in the test_configs.yml
-* Configurations path is <path>/gems/snow_sync-<version>
+* Configuration path is the current working directory
 * Append /api/now/table/ to the base_url
 
 ```ruby
