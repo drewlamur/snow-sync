@@ -45,6 +45,7 @@ cd /lib/snow_sync
 ```
 
 * Setup the configurations in the configs.yml
+* Only supports single table map configuration (multi coming soon...)
 * Configuration path is the current working directory
 * Append /api/now/table/ to the base_url
 
@@ -52,7 +53,7 @@ cd /lib/snow_sync
 guard -i
 ```
 
-Note: if the sync directory is deleted after a previous sync, reset the credential configs in the configs.yml so they can be re-encrypted
+**Note:** if the sync directory is deleted after a successful sync, reset the credential configs in the configs.yml so they can be re-encrypted on the next sync
 
 
 ## Running the Tests
@@ -71,7 +72,7 @@ cd <path>/gems/snow_sync-<version>
 rspec spec/sync_util_spec.rb
 ```
 
-Note: if the sync directory is deleted after a previous sync, reset the credential configs in the test_configs.yml so they can be re-encrypted
+**Note:** if the sync directory is deleted after a successful sync, reset the credential configs in the test_configs.yml so they can be re-encrypted on the next sync
 
 ## License
 
