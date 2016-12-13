@@ -74,25 +74,30 @@ describe "check_required_configs" do
   end
 
   it "should raise an exception when there is no config path" do
-    util.configs["conf_path"] = "test/bad/path"
-    expect{util.check_required_configs}.to raise_error(/Please check the configuration path, credentials or table to sync/)
+    util.configs["conf_path"] = nil
+    expect{util.check_required_configs}.to raise_error(/Check the configuration path, base url, credentials or table to sync/)
+  end
+
+  it "should raise an exception when there is no base url" do
+    util.configs["base_url"] = nil
+    expect{util.check_required_configs}.to raise_error(/Check the configuration path, base url, credentials or table to sync/)
   end
 
   it "should raise an exception when there is no username" do
     util.configs["creds"]["user"] = nil
-    expect{util.check_required_configs}.to raise_error(/Please check the configuration path, credentials or table to sync/)
+    expect{util.check_required_configs}.to raise_error(/Check the configuration path, base url, credentials or table to sync/)
   end
 
   it "should raise an exception when there is no password" do
     util.configs["creds"]["pass"] = nil
-    expect{util.check_required_configs}.to raise_error(/Please check the configuration path, credentials or table to sync/)
+    expect{util.check_required_configs}.to raise_error(/Check the configuration path, base url, credentials or table to sync/)
   end
 
   it "should raise an exception when there are no tables mapped" do
     tables = util.configs["table_map"].keys
     tables.each do |table|
       util.configs["table_map"][table]["table"] = nil
-      expect{util.check_required_configs}.to raise_error(/Please check the configuration path, credentials or table to sync/)
+      expect{util.check_required_configs}.to raise_error(/Check the configuration path, base url, credentials or table to sync/)
     end
   end
 
