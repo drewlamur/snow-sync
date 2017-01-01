@@ -1,5 +1,7 @@
 # SnowSync
 
+[![Gem Version] (https://img.shields.io/badge/gem-%20v2.0.4-blue.svg)] (https://rubygems.org/gems/snow_sync) [![Dependency Status] (https://img.shields.io/badge/dependencies-%20up--to--date-brightgreen.svg)] (https://rubygems.org/gems/snow_sync) [![Dependency Status] (https://img.shields.io/badge/downloads-%202k%2B-brightgreen.svg)] (https://rubygems.org/gems/snow_sync)
+
 SnowSync is a file sync utility tool and API which provides a bridge for off platform ServiceNow development using an IDE or text editor locally.
 
 SnowSync syncronizes configured fields (scripts) for a ServiceNow instance locally, then watches for file changes and syncs back changes to the corresponding record.
