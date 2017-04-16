@@ -11,9 +11,8 @@ module SnowSync
 
     attr_accessor :cf, :configs, :logger
 
-    # creates a utility object
-    # sets the encapsulated data
-    # opts {string}: optional configuration
+    # Creates a utility object & sets the encapsulated config data
+    # @param [String] opts Optional configuration
 
     def initialize(opts = nil)
       opts.nil? ? @cf = "configs.yml" : @cf = "test_configs.yml"
@@ -21,9 +20,9 @@ module SnowSync
       @logger = Logger.new(STDERR)
     end
 
-    # creates a directory if no directory exists
-    # name {string}: required directory name
-    # &block {object}: optional directory path
+    # Creates a directory if no directory exists
+    # @param [String] name Required directory name
+    # @param [Object] &block Optional directory path
 
     def create_directory(name, &block)
       yield block if block_given?
@@ -33,11 +32,10 @@ module SnowSync
       end
     end
 
-    # creates a js file
-    # logs the file creation
-    # name {string}: required file name
-    # json {object}: required json object
-    # &block {object}: optional file path
+    # Creates a JS file & logs the file creation
+    # @param [String] name Required file name
+    # @param [Object] json Required json object
+    # @param [Object] &block Optional file path
 
     def create_file(name, json, &block)
       yield if block_given?
@@ -47,8 +45,8 @@ module SnowSync
       end
     end
 
-    # checks required configurations
-    # raises an exception when configs aren't found
+    # Checks required configurations
+    # @raise [ExceptionClass] Raises exception if configs are not found
 
     def check_required_configs
       missing_path = @configs["conf_path"].nil?
@@ -64,7 +62,7 @@ module SnowSync
       end    
     end
 
-    # encrypts config credentials based on previous sync
+    # Encrypts config credentials based on previous sync
 
     def encrypt_credentials
       previous_sync = File.directory?("sync")
@@ -83,7 +81,7 @@ module SnowSync
       end
     end
 
-    # requests, retrieves, sets up the js script file locally
+    # Requests, retrieves, sets up the JS script file locally
     
     def setup_sync_directories
       @configs["table_map"].each do |key, value|
@@ -112,8 +110,8 @@ module SnowSync
       end
     end
 
-    # classify's a local js file name
-    # file {string}: js file path
+    # Classifies a JS file by name
+    # @param [String] file JS file path
 
     def classify(file)
       file = file.split("/").last.split(".").first.camelcase
@@ -121,8 +119,9 @@ module SnowSync
       file
     end
 
-    # returns the configured SN table hash
-    # file {string}: js file path 
+    # Lookup returns the configured servicenow table hash
+    # @param [String] file JS file path
+    # @return configured servicenow table hash
 
     def table_lookup(file)
       @configs["table_map"].select do |key, value|
@@ -132,10 +131,9 @@ module SnowSync
       end
     end
 
-    # replaces the encapsulated table response value
-    # with the current js file updates
-    # file {string}: js file path
-    # table_hash {hash}: configured SN table hash
+    # Merges JS file changes with the encapsulated table response value
+    # @param [String] file JS file path
+    # @param [Hash] table_hash Configured servicenow table hash
 
     def merge_update(file, table_hash)
       FileUtils.cd(file.split("/")[0..1].join("/"))
@@ -144,9 +142,7 @@ module SnowSync
       FileUtils.cd("../..")
     end
 
-    # check required configurations
-    # encrypt configured credentials
-    # retrieve, set up the script file locally
+    # Completes a sync based on the configurations
 
     def start_sync
       check_required_configs
@@ -154,9 +150,8 @@ module SnowSync
       setup_sync_directories
     end
 
-    # merges all js file changes
-    # updates a SN instance with the changes
-    # files {array}: array of js file paths
+    # Merges all JS file changes & pushes to the configured servicenow instance
+    # @param [Array] files JS file paths
 
     def push_modifications(files)
       files.each do |file|
