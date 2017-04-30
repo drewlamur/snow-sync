@@ -111,11 +111,11 @@ module SnowSync
           pass = Base64.strict_decode64(@configs["creds"]["pass"])
           response = RestClient.get(
           "#{@configs['base_url']}#{value["table"]}?sysparm_query=sys_id%3D" + 
-          "#{value["sysid"]}%5Ename%3D#{value["name"]}",
+          "#{value["sys_id"]}%5Ename%3D#{value["name"]}",
             {:authorization => "#{"Basic " + Base64.strict_encode64("#{user}:#{pass}")}",
              :accept => "application/json"})
           path = proc { FileUtils.cd(subdirectory_name) }
-          @configs[value["table"] + "_response"] = JSON.parse(response)["result"][0]
+          @configs["table_map"][key]["response"] = JSON.parse(response)["result"][0]
           json = JSON.parse(response)["result"][0][value["field"]]
           name = value["name"].snakecase
           create_file(name, json, &path)
