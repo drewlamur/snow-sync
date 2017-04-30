@@ -11,5 +11,5 @@ table_map:
   script_include:
     name:
     table:
-    sysid:
+    sys_id:
     field:
