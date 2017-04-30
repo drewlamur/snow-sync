@@ -32,6 +32,14 @@ module SnowSync
       end
     end
 
+    # Creates a subdirectory if no directory exists
+    # @param [String] name Required directory name
+    # @param [Object] &block Optional directory path
+
+    def create_subdirectory(name, &block)
+      create_directory(name, &block)
+    end
+
     # Creates a JS file & logs the file creation
     # @param [String] name Required file name
     # @param [Object] json Required json object
@@ -81,15 +89,23 @@ module SnowSync
       end
     end
 
-    # Requests, retrieves, sets up the JS script file locally
+    # Creates the dir structure, requests, retrieves & sets up JS files locally
     
-    def setup_sync_directories
+    def run_setup_and_sync
+      # sync directory boolean tracks sync dir creation
+      # necessary for iterative subdir creation and re-syncs
+      sync_directory = File.directory?("sync")
+      directory_name = "sync"
       @configs["table_map"].each do |key, value|
-        directory_name = "sync"
-        create_directory(directory_name)
-        path = proc { FileUtils.cd(directory_name) }
-        sub_directory_name = key
-        create_directory(sub_directory_name, &path)
+        subdirectory_name = key
+        if sync_directory
+          create_subdirectory(subdirectory_name)
+        else
+          create_directory(directory_name)
+          path = proc { FileUtils.cd(directory_name) }
+          create_subdirectory(subdirectory_name, &path)
+          sync_directory = "true"
+        end
         begin
           user = Base64.strict_decode64(@configs["creds"]["user"])
           pass = Base64.strict_decode64(@configs["creds"]["pass"])
@@ -98,12 +114,12 @@ module SnowSync
           "#{value["sysid"]}%5Ename%3D#{value["name"]}",
             {:authorization => "#{"Basic " + Base64.strict_encode64("#{user}:#{pass}")}",
              :accept => "application/json"})
-          path = proc { FileUtils.cd(sub_directory_name) }
+          path = proc { FileUtils.cd(subdirectory_name) }
           @configs[value["table"] + "_response"] = JSON.parse(response)["result"][0]
           json = JSON.parse(response)["result"][0][value["field"]]
           name = value["name"].snakecase
           create_file(name, json, &path)
-          FileUtils.cd("../..")
+          FileUtils.cd("../")
         rescue => e
           @logger.error "ERROR: #{e}"
         end
@@ -147,7 +163,7 @@ module SnowSync
     def start_sync
       check_required_configs
       encrypt_credentials
-      setup_sync_directories
+      run_setup_and_sync
     end
 
     # Merges all JS file changes & pushes to the configured servicenow instance
