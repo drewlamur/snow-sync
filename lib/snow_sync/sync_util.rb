@@ -99,7 +99,8 @@ module SnowSync
       @configs["table_map"].each do |key, value|
         subdirectory_name = key
         if sync_directory
-          create_subdirectory(subdirectory_name)
+          path = proc { FileUtils.cd(directory_name) }
+          create_subdirectory(subdirectory_name, &path)
         else
           create_directory(directory_name)
           path = proc { FileUtils.cd(directory_name) }
@@ -119,7 +120,7 @@ module SnowSync
           json = JSON.parse(response)["result"][0][value["field"]]
           name = value["name"].snakecase
           create_file(name, json, &path)
-          FileUtils.cd("../")
+          FileUtils.cd("../..")
         rescue => e
           @logger.error "ERROR: #{e}"
         end
