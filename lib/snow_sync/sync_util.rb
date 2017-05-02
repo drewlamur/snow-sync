@@ -181,9 +181,9 @@ module SnowSync
           user = Base64.strict_decode64(@configs["creds"]["user"])
           pass = Base64.strict_decode64(@configs["creds"]["pass"])
           request_body_map = { 
-            table_hash["field"].to_sym => @configs[table_hash["table"] + "_response"] 
+            table_hash["field"].to_sym => @configs["table_map"][type]["mod"]
           }
-          response = RestClient.patch("#{@configs['base_url']}#{table_hash["table"]}/#{table_hash["sysid"]}", 
+          response = RestClient.patch("#{@configs['base_url']}#{table_hash["table"]}/#{table_hash["sys_id"]}", 
           request_body_map.to_json,
             {:authorization => "#{"Basic " + Base64.strict_encode64("#{user}:#{pass}")}",
              :content_type => "application/json", :accept => "application/json"})
