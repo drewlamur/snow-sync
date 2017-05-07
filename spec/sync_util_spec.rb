@@ -165,7 +165,7 @@ describe "setup_sync_directories" do
   end
 
   it "should setup and synchronize field from the SN instance" do
-    util.setup_sync_directories
+    util.run_setup_and_sync
     file = File.open("sync/script_include/test_class.js")
     expect(file.is_a?(Object)).to eq true
     FileUtils.rm_rf("sync")
@@ -180,7 +180,7 @@ describe "push_modifications" do
   end
 
   it "should push modifications to a configured instance" do
-    util.setup_sync_directories
+    util.run_setup_and_sync
     file = File.open("sync/script_include/test_class.js", "r+")
     lines = file.readlines
     file.close
@@ -191,7 +191,7 @@ describe "push_modifications" do
     end
     newfile.close
     util.push_modifications(["sync/script_include/test_class.js"])
-    util.setup_sync_directories
+    util.run_setup_and_sync
     file = File.open("sync/script_include/test_class.js", "r+")
     lines = file.readlines
     file.close
