@@ -173,7 +173,7 @@ describe "setup_sync_directories" do
  
 end
 
-describe "push_modifications" do
+describe "push_modifications - single table configuration" do
 
   let! :util do
     SnowSync::SyncUtil.new(opts = "test")
@@ -196,6 +196,44 @@ describe "push_modifications" do
     lines = file.readlines
     file.close
     expect(lines[0]).to eq "// test comment -\n"
+  end
+
+end
+
+describe "push_modifications - mutli-table configuration" do
+
+  let! :util do
+    SnowSync::SyncUtil.new(opts = "test")
+  end
+
+  it "should sync, update, queue, push, re-sync mods for a configured instance" do
+    def do_edit(file, edit)
+      file = File.open(file, "r+")
+      lines = file.readlines
+      file.close  
+      lines[0] = edit
+      newfile = File.new(file, "w")
+      lines.each do |line|
+        newfile.write(line)
+      end
+      newfile.close
+    end
+    def run_check(file, edit)
+      file = File.open(file, "r+")
+      lines = file.readlines
+      file.close
+      expect(lines[0]).to eq edit
+    end
+    util.run_setup_and_sync
+    # sys_script_include
+    do_edit("sync/script_include/test_class.js", "// test comment -\n")
+    # sys_ui_action
+    do_edit("sync/ui_action/test.js", "// test comment -\n")
+    # queued mods, push in sequence
+    util.push_modifications(["sync/script_include/test_class.js", "sync/ui_action/test.js"])
+    util.run_setup_and_sync
+    run_check("sync/script_include/test_class.js", "// test comment -\n")
+    run_check("sync/ui_action/test.js", "// test comment -\n")
   end
 
 end
