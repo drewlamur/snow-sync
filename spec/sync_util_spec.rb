@@ -125,7 +125,7 @@ describe "table_lookup" do
 
   it "should return configured SN table" do
     table_map = util.table_lookup("sync/script_include/test_class.js")
-    expect(table_map.keys).to eq ["name", "table", "sysid", "field"]
+    expect(table_map.keys).to eq ["name", "table", "sys_id", "field"]
     expect(table_map["table"]).to eq "sys_script_include"
   end
 
@@ -137,20 +137,22 @@ describe "merge_update" do
     SnowSync::SyncUtil.new(opts = "test")
   end
 
-  it "should merge updated script with the configs object" do
+  it "should merge script with the configs object" do
     FileUtils.mkdir_p("sync")
     FileUtils.mkdir_p("sync/test_sub_dir")
-    json = { "property" => "value - with update" }
+    json_resp = "var test = 'test'; \n" +
+    "var testing = function(arg) { \n\tgs.print(arg) \n}; \n" +
+    "testing('test');"
     name = "TestClass".snakecase
     path = proc do
       FileUtils.cd("sync/test_sub_dir")
     end
-    util.create_file(name, json, &path)
+    util.create_file(name, json_resp, &path)
     FileUtils.cd("../..")
     file = "sync/test_sub_dir/test_class.js"
     table_map = util.table_lookup(file)
-    util.merge_update(file, table_map)
-    expect(util.configs["sys_script_include_response"] != nil).to eq true
+    util.merge_update(file, "script_include", table_map)
+    expect(util.configs["table_map"]["script_include"]["mod"] != nil).to eq true
   end
 
 end
