@@ -150,13 +150,13 @@ module SnowSync
     end
 
     # Merges JS file changes with the encapsulated table response value
-    # @param [String] file JS file path
-    # @param [String] type Servicenow script type
+    # @param [String] type Config table label
+    # @param [String] file JS file by name
     # @param [Hash] table_hash Configured servicenow table hash
 
-    def merge_update(file, type, table_hash)
-      FileUtils.cd(file.split("/")[0..1].join("/"))
-      script_body = File.open(file.split("/").last).read
+    def merge_update(type, file, table_hash)
+      FileUtils.cd("sync" + "/" + type)
+      script_body = File.open(file).read
       @configs["table_map"][type]["mod"] = script_body
       FileUtils.cd("../..")
     end
@@ -179,7 +179,7 @@ module SnowSync
         type = path[1]
         file = path[2]
         table_hash = table_lookup(type, file)
-        merge_update(file, type, table_hash)
+        merge_update(type, file, table_hash)
         begin
           user = Base64.strict_decode64(@configs["creds"]["user"])
           pass = Base64.strict_decode64(@configs["creds"]["pass"])
