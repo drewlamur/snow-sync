@@ -129,6 +129,7 @@ module SnowSync
 
     # Classifies a JS file by name
     # @param [String] file JS file by name
+    # @return classified JS file by name
 
     def classify(file)
       file = file.split(".").first.camelcase
