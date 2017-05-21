@@ -137,7 +137,7 @@ module SnowSync
     end
 
     # Lookup returns the configured servicenow table hash
-    # @param [String] type config table label
+    # @param [String] type Config table label
     # @param [String] file JS file by name
     # @return configured servicenow table hash
 
