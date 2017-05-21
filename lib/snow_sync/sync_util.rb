@@ -128,21 +128,22 @@ module SnowSync
     end
 
     # Classifies a JS file by name
-    # @param [String] file JS file path
+    # @param [String] file JS file by name
 
     def classify(file)
-      file = file.split("/").last.split(".").first.camelcase
-      file[0] = file[0].capitalize
+      file.split(".").first.camelcase
+      file[0].capitalize
       file
     end
 
     # Lookup returns the configured servicenow table hash
-    # @param [String] file JS file path
+    # @param [String] type config table label
+    # @param [String] file JS file by name
     # @return configured servicenow table hash
 
-    def table_lookup(file)
+    def table_lookup(type, file)
       @configs["table_map"].select do |key, value|
-        if value["name"].eql?(classify(file))
+        if key.eql?(type) and value["name"].eql?(classify(file))
           return value
         end
       end
@@ -169,13 +170,15 @@ module SnowSync
     end
 
     # Merges all JS file changes & pushes to the configured servicenow instance
-    # @param [Array] files JS file paths
+    # @param [Array] paths JS file paths
 
-    def push_modifications(files)
-      files.each do |file|
-        file.downcase!
-        type = file.split("/")[1]
-        table_hash = table_lookup(file)
+    def push_modifications(paths)
+      paths.each do |path|
+        path.downcase!
+        path = path.split("/")
+        type = path[1]
+        file = path[2]
+        table_hash = table_lookup(type, file)
         merge_update(file, type, table_hash)
         begin
           user = Base64.strict_decode64(@configs["creds"]["user"])
