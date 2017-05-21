@@ -1,6 +1,6 @@
 # SnowSync
 
-[![Gem Version](https://img.shields.io/badge/gem-v2.0.7-brightgreen.svg)](https://rubygems.org/gems/snow_sync) [![Dependency Status](https://img.shields.io/badge/dependencies-up--to--date-orange.svg)](https://rubygems.org/gems/snow_sync) [![Downloads](https://img.shields.io/badge/downloads-3k%2B-brightgreen.svg)](https://rubygems.org/gems/snow_sync)
+[![Gem Version](https://img.shields.io/badge/gem-v3.0.1-brightgreen.svg)](https://rubygems.org/gems/snow_sync) [![Dependency Status](https://img.shields.io/badge/dependencies-up--to--date-blue.svg)](https://rubygems.org/gems/snow_sync) [![Downloads](https://img.shields.io/badge/downloads-4k%2B-lightgrey.svg)](https://rubygems.org/gems/snow_sync)
 
 SnowSync is a file sync utility tool and API which provides a bridge for off platform ServiceNow development using an IDE or text editor locally.
 
@@ -8,8 +8,16 @@ SnowSync syncronizes configured fields (scripts) for a ServiceNow instance local
 
 ## Installation
 
+```bash
+mkdir snow_sync
+```
+
+```bash
+cd snow_sync
+```
+
 ```ruby
-gem install --install-dir <path> snow_sync
+gem install --install-dir <path-to-the-snow_sync-dir> snow_sync
 ```
 
 ## Setup & Usage
@@ -19,10 +27,10 @@ gem install bundler
 ```
 
 ```bash
-cd <path>/gems/snow_sync-<version>
+cd <path-to-the-snow_sync-dir>/gems/snow_sync-<version>
 ```
 
-Create a Gemfile and add the following:
+Create a Gemfile and add the following Gem dependencies:
 
 ```ruby
 source 'https://rubygems.org'
@@ -47,7 +55,7 @@ cd /lib/snow_sync
 ```
 
 * Setup the configurations in the configs.yml
-* Only supports single table map configuration (multi coming soon...)
+* Now supports multi-table map configurations
 * Configuration path is the current working directory
 * Append /api/now/table/ to the base_url
 
@@ -64,8 +72,8 @@ guard -i
 cd <path>/gems/snow_sync-<version>
 ```
 
-* Create a test_configs.yml file
-* Create a test record in the instance (ex: a test script include)
+* Integration tests use a test record in the instance (e.g. a script include)
+* Unit tests are all stubbed out
 * Setup the test configurations in the test_configs.yml
 * Configuration path is the current working directory
 * Append /api/now/table/ to the base_url
