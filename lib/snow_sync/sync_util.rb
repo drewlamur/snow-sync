@@ -131,8 +131,8 @@ module SnowSync
     # @param [String] file JS file by name
 
     def classify(file)
-      file.split(".").first.camelcase
-      file[0].capitalize
+      file = file.split(".").first.camelcase
+      file[0] = file[0].capitalize
       file
     end
 
