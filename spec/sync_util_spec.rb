@@ -140,20 +140,24 @@ describe "merge_update" do
 
   it "should merge script with the configs object" do
     FileUtils.mkdir_p("sync")
-    FileUtils.mkdir_p("sync/test_sub_dir")
+    FileUtils.mkdir_p("sync/script_include")
     json_resp = "var test = 'test'; \n" +
     "var testing = function(arg) { \n\tgs.print(arg) \n}; \n" +
     "testing('test');"
     name = "TestClass".snakecase
     path = proc do
-      FileUtils.cd("sync/test_sub_dir")
+      FileUtils.cd("sync/script_include")
     end
     util.create_file(name, json_resp, &path)
     FileUtils.cd("../..")
-    file = "sync/test_sub_dir/test_class.js"
-    table_map = util.table_lookup(file)
-    util.merge_update(file, "script_include", table_map)
+    file = "sync/script_include/test_class.js"
+    path = file.split("/")
+    type = path[1]
+    file = path[2]
+    table_map = util.table_lookup(type, file)
+    util.merge_update(type, file, table_map)
     expect(util.configs["table_map"]["script_include"]["mod"] != nil).to eq true
+    FileUtils.rm_rf("sync")
   end
 
 end
