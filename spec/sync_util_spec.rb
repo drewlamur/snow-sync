@@ -111,7 +111,8 @@ describe "classify" do
 
   it "should convert snake_case string to CamelCase" do
     js_file_path = "sync/script_include/test_class.js"
-    cc = util.classify(js_file_path)
+    path = js_file_path.split("/")
+    cc = util.classify(path[2])
     expect(cc).to eq "TestClass"
   end
 
