@@ -125,7 +125,7 @@ describe "table_lookup" do
   end 
 
   it "should return configured SN table" do
-    table_map = util.table_lookup("sync/script_include/test_class.js")
+    table_map = util.table_lookup("script_include", "test_class.js")
     expect(table_map.keys).to eq ["name", "table", "sys_id", "field"]
     expect(table_map["table"]).to eq "sys_script_include"
   end
