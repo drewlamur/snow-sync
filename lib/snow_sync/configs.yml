@@ -13,3 +13,8 @@ table_map:
     table:
     sys_id:
     field:
+  scheduled_job:
+    name:
+    table:
+    sys_id:
+    field:
