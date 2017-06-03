@@ -1,6 +1,6 @@
 # SnowSync
 
-[![Gem Version](https://img.shields.io/badge/gem-v3.0.1-brightgreen.svg)](https://rubygems.org/gems/snow_sync) [![Dependency Status](https://img.shields.io/badge/dependencies-up--to--date-blue.svg)](https://rubygems.org/gems/snow_sync) [![Downloads](https://img.shields.io/badge/downloads-4k%2B-lightgrey.svg)](https://rubygems.org/gems/snow_sync)
+[![Gem Version](https://img.shields.io/badge/gem-v3.1.2-brightgreen.svg)](https://rubygems.org/gems/snow_sync) [![Dependency Status](https://img.shields.io/badge/dependencies-up--to--date-blue.svg)](https://rubygems.org/gems/snow_sync) [![Downloads](https://img.shields.io/badge/downloads-5k%2B-lightgrey.svg)](https://rubygems.org/gems/snow_sync)
 
 SnowSync is a file sync utility tool and API which provides a bridge for off platform ServiceNow development using an IDE or text editor locally.
 
@@ -34,7 +34,6 @@ Create a Gemfile and add the following Gem dependencies:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'byebug', '~> 9.0.6'
 gem 'facets', '~> 3.1.0'
 gem 'guard', '~> 2.14.0'
 gem 'guard-yield', '~> 0.1.0'
@@ -69,7 +68,7 @@ guard -i
 ## Running the Tests
 
 ```bash
-cd <path>/gems/snow_sync-<version>
+cd <path-to-the-snow_sync-dir>/gems/snow_sync-<version>
 ```
 
 * Integration tests use a test record in the instance (e.g. a script include)

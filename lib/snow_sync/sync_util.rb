@@ -199,7 +199,7 @@ module SnowSync
       end
     end
 
-    # dispatches osx & linux platform notification when file updates are pushed
+    # Dispatches osx & linux platform notification when file updates are pushed
     # @param [Array] update File updated
     # @param [Object] log Log Object
 
