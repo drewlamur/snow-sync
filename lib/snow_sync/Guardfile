@@ -19,6 +19,7 @@ yield_options = {
   run_on_modifications: proc do |log, _, files|
     log.info "!!: #{files * ','}"
     @util.push_modifications(files)
+    @util.notify(files, log)
   end,
 
   run_on_additions: proc do |log, _, files| 

@@ -6,7 +6,9 @@ module SnowSync
     require "facets"
     require "fileutils"
     require "json"
+    require "libnotify" if `uname` =~ /Linux/
     require 'rest-client'
+    require "terminal-notifier-guard"
     require "yaml"
 
     attr_accessor :cf, :configs, :logger
@@ -194,6 +196,27 @@ module SnowSync
         rescue => e
           @logger.error "ERROR: #{e}"
         end
+      end
+    end
+
+    # dispatches osx & linux platform notification when file updates are pushed
+    # @param [Array] update File updated
+    # @param [Object] log Log Object
+
+    def notify(update, log)
+      if `uname` =~ /Darwin/
+        TerminalNotifier::Guard.success(
+          "File: #{update * ','}",
+          :title => "ServiceNow Script Update"
+        )
+        log.info "->: osx notification dispatched"
+      elsif `uname` =~ /Linux/
+        Libnotify.show(
+          :summary => "ServiceNow Script Update",
+          :body => "File: #{update * ','}",
+          :timeout => 1.5
+        )
+        log.info "->: linux notification dispatched"
       end
     end
 
