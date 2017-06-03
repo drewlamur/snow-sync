@@ -1,6 +1,6 @@
 # SnowSync
 
-[![Gem Version](https://img.shields.io/badge/gem-v3.1.2-brightgreen.svg)](https://rubygems.org/gems/snow_sync) [![Dependency Status](https://img.shields.io/badge/dependencies-up--to--date-blue.svg)](https://rubygems.org/gems/snow_sync) [![Downloads](https://img.shields.io/badge/downloads-5k%2B-lightgrey.svg)](https://rubygems.org/gems/snow_sync)
+[![Gem Version](https://img.shields.io/badge/gem-v3.1.3-brightgreen.svg)](https://rubygems.org/gems/snow_sync) [![Dependency Status](https://img.shields.io/badge/dependencies-up--to--date-blue.svg)](https://rubygems.org/gems/snow_sync) [![Downloads](https://img.shields.io/badge/downloads-5k%2B-lightgrey.svg)](https://rubygems.org/gems/snow_sync)
 
 SnowSync is a file sync utility tool and API which provides a bridge for off platform ServiceNow development using an IDE or text editor locally.
 
@@ -30,19 +30,24 @@ gem install bundler
 cd <path-to-the-snow_sync-dir>/gems/snow_sync-<version>
 ```
 
+```bash
+brew install terminal-notifier
+```
+
 Create a Gemfile and add the following Gem dependencies:
 
 ```ruby
-source 'https://rubygems.org'
-gem 'facets', '~> 3.1.0'
-gem 'guard', '~> 2.14.0'
-gem 'guard-yield', '~> 0.1.0'
-gem 'json', '>= 1.8.3', '~> 1.8.0'
-gem 'libnotify', '~> 0.9.1'
-gem 'rake', '~> 10.0.0'
-gem 'rest-client', '~> 2.0.0'
-gem 'rspec', '~> 3.5.0'
-gem 'thor', '0.19.1'
+source "https://rubygems.org"
+gem "facets", "~> 3.1.0"
+gem "guard", "~> 2.14.0"
+gem "guard-yield", "~> 0.1.0"
+gem "json", ">= 1.8.3", "~> 1.8.0"
+gem "libnotify", "~> 0.9.1"
+gem "rake", "~> 10.0.0"
+gem "rest-client", "~> 2.0.0"
+gem "rspec", "~> 3.5.0"
+gem "terminal-notifier-guard", "~> 1.7"
+gem "thor", "0.19.1"
 ```
 
 ```bash
