@@ -201,7 +201,7 @@ module SnowSync
 
     # Dispatches osx & linux platform notification when file updates are pushed
     # @param [Array] update File updated
-    # @param [Object] log Log Object
+    # @param [Object] log Log object
 
     def notify(update, log)
       if `uname` =~ /Darwin/

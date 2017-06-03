@@ -1,6 +1,6 @@
 # SnowSync
 
-[![Gem Version](https://img.shields.io/badge/gem-v3.1.3-brightgreen.svg)](https://rubygems.org/gems/snow_sync) [![Dependency Status](https://img.shields.io/badge/dependencies-up--to--date-blue.svg)](https://rubygems.org/gems/snow_sync) [![Downloads](https://img.shields.io/badge/downloads-5k%2B-lightgrey.svg)](https://rubygems.org/gems/snow_sync)
+[![Gem Version](https://img.shields.io/badge/gem-v3.1.4-brightgreen.svg)](https://rubygems.org/gems/snow_sync) [![Dependency Status](https://img.shields.io/badge/dependencies-up--to--date-blue.svg)](https://rubygems.org/gems/snow_sync) [![Downloads](https://img.shields.io/badge/downloads-5k%2B-lightgrey.svg)](https://rubygems.org/gems/snow_sync)
 
 SnowSync is a file sync utility tool and API which provides a bridge for off platform ServiceNow development using an IDE or text editor locally.
 
@@ -29,6 +29,8 @@ gem install bundler
 ```bash
 cd <path-to-the-snow_sync-dir>/gems/snow_sync-<version>
 ```
+
+OSX users run the following command:
 
 ```bash
 brew install terminal-notifier
