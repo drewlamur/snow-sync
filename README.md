@@ -1,6 +1,6 @@
 # SnowSync
 
-[![Gem Version](https://img.shields.io/badge/gem-v3.1.4-brightgreen.svg)](https://rubygems.org/gems/snow_sync) [![Dependency Status](https://img.shields.io/badge/dependencies-up--to--date-blue.svg)](https://rubygems.org/gems/snow_sync) [![Downloads](https://img.shields.io/badge/downloads-5k%2B-lightgrey.svg)](https://rubygems.org/gems/snow_sync)
+[![Gem Version](https://img.shields.io/badge/gem-v3.1.5-brightgreen.svg)](https://rubygems.org/gems/snow_sync) [![Dependency Status](https://img.shields.io/badge/dependencies-up--to--date-blue.svg)](https://rubygems.org/gems/snow_sync) [![Downloads](https://img.shields.io/badge/downloads-25k%2B-lightgrey.svg)](https://rubygems.org/gems/snow_sync)
 
 SnowSync is a file sync utility tool and API which provides a bridge for off platform ServiceNow development using an IDE or text editor locally.
 
@@ -9,15 +9,15 @@ SnowSync syncronizes configured fields (scripts) for a ServiceNow instance local
 ## Installation
 
 ```bash
-mkdir snow_sync
+mkdir snow-sync
 ```
 
 ```bash
-cd snow_sync
+cd snow-sync
 ```
 
 ```ruby
-gem install --install-dir <path-to-the-snow_sync-dir> snow_sync
+gem install --install-dir <path-to-the-snow-sync-dir> snow_sync
 ```
 
 ## Setup & Usage
@@ -43,11 +43,12 @@ source "https://rubygems.org"
 gem "facets", "~> 3.1.0"
 gem "guard", "~> 2.14.0"
 gem "guard-yield", "~> 0.1.0"
-gem "json", ">= 1.8.3", "~> 1.8.0"
-gem "libnotify", "~> 0.9.1"
-gem "rake", "~> 10.0.0"
+gem "json", "~> 2.6.1"
+gem "libnotify", "~> 0.9.2"
+gem "rake", "~> 13.0.6"
 gem "rest-client", "~> 2.0.0"
-gem "rspec", "~> 3.5.0"
+gem "rspec", "~> 3.10.0"
+gem "rspec-core", "~> 3.10.1"
 gem "terminal-notifier-guard", "~> 1.7"
 gem "thor", "0.19.1"
 ```
@@ -62,7 +63,7 @@ cd /lib/snow_sync
 
 * Setup the configurations in the configs.yml
 * Now supports multi-table map configurations
-* Configuration path is the current working directory
+* YAML configuration path is the current working directory
 * Append /api/now/table/ to the base_url
 
 ```bash
@@ -75,17 +76,16 @@ guard -i
 ## Running the Tests
 
 ```bash
-cd <path-to-the-snow_sync-dir>/gems/snow_sync-<version>
+cd <path-to-the-snow-sync-dir>/gems/snow_sync-<version>
 ```
 
-* Integration tests use a test record in the instance (e.g. a script include)
-* Unit tests are all stubbed out
+* Integration tests use a test record in the instance, unit tests do not
 * Setup the test configurations in the test_configs.yml
-* Configuration path is the current working directory
+* YAML configuration path is the current working directory
 * Append /api/now/table/ to the base_url
 
 ```ruby
-rspec spec/sync_util_spec.rb
+bundle exec rspec spec/sync_util_spec.rb
 ```
 
 **Note:** if the sync directory is deleted after a successful sync, reset the credential configs in the test_configs.yml so they can be re-encrypted on the next sync
