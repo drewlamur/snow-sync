@@ -1,6 +1,5 @@
 require "spec_helper"
 
-## --> unit tests
 describe "utility object" do
 
   let! :util do
@@ -162,7 +161,6 @@ describe "merge_update" do
 
 end
 
-## --> integration tests
 describe "setup_sync_directories" do
  
   let! :util do
@@ -233,12 +231,12 @@ describe "push_modifications - mutli-table configuration" do
     # sys_script_include
     do_edit("sync/script_include/test_class.js", "// test comment -\n")
     # sys_ui_action
-    do_edit("sync/ui_action/test.js", "// test comment -\n")
+    do_edit("sync/ui_action/test_action.js", "// test comment -\n")
     # queued mods, push in sequence
-    util.push_modifications(["sync/script_include/test_class.js", "sync/ui_action/test.js"])
+    util.push_modifications(["sync/script_include/test_class.js", "sync/ui_action/test_action.js"])
     util.run_setup_and_sync
     run_check("sync/script_include/test_class.js", "// test comment -\n")
-    run_check("sync/ui_action/test.js", "// test comment -\n")
+    run_check("sync/ui_action/test_action.js", "// test comment -\n")
   end
 
 end
