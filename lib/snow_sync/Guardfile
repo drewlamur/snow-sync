@@ -16,18 +16,18 @@ yield_options = {
     logger.info "Guard::Yield - Done!"
   end,
 
-  run_on_modifications: proc do |log, _, files|
-    log.info "!!: #{files * ','}"
+  run_on_modifications: proc do |logger, _, files|
     @util.push_modifications(files)
-    @util.notify(files, log)
+    logger.info "!!: #{files}"
+    @util.notify(files, logger)
   end,
 
-  run_on_additions: proc do |log, _, files| 
-    log.info "++: #{files * ','}" 
+  run_on_additions: proc do |logger, _, files| 
+    logger.info "++: #{files}"
   end,
 
-  run_on_removals: proc do |log, _, files|
-    log.warn "xx: #{files * ','}"
+  run_on_removals: proc do |logger, _, files|
+    logger.warn "xx: #{files}"
   end,
 
 }
