@@ -62,12 +62,12 @@ cd /lib/snow_sync
 ```
 
 * Setup the configurations in the configs.yml
-* Now supports multi-table map configurations
+* Supports multi-table map configurations
 * YAML configuration path is the current working directory
 * Append /api/now/table/ to the base_url
 
 ```bash
-guard -i
+bundle exec guard -i
 ```
 
 **Note:** if the sync directory is deleted after a successful sync, reset the credential configs in the configs.yml so they can be re-encrypted on the next sync
@@ -79,13 +79,19 @@ guard -i
 cd <path-to-the-snow-sync-dir>/gems/snow_sync-<version>
 ```
 
-* Integration tests use a test record in the instance, unit tests do not
+* Integration tests use a test record in the test instance
 * Setup the test configurations in the test_configs.yml
 * YAML configuration path is the current working directory
 * Append /api/now/table/ to the base_url
 
 ```ruby
 bundle exec rspec spec/sync_util_spec.rb
+```
+
+* Unit tests are pure, so they're not externally dependent
+
+```ruby
+bundle exec rspec spec/sync_util_mock_spec.rb
 ```
 
 **Note:** if the sync directory is deleted after a successful sync, reset the credential configs in the test_configs.yml so they can be re-encrypted on the next sync
