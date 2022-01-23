@@ -202,21 +202,21 @@ module SnowSync
     # Dispatches osx & linux platform notification when file updates are pushed
     # @param [Array] update File updated
     # @param [String] uname Operating system name
-    # @param [Object] log Log object
+    # @param [Object] logger Logger object
 
-    def notify(update, uname, log)
+    def notify(update, uname, logger)
       if uname =~ /darwin/
         TerminalNotifier::Guard.success(
           "File: #{update}",
           :title => "ServiceNow Script Update"
         )
-        log.info "->: osx notification dispatched"
+        logger.info "->: osx notification dispatched"
       elsif uname =~ /linux/
         Libnotify.show(
           :summary => "ServiceNow Script Update",
           :body => "File: #{update}"
         )
-        log.info "->: linux notification dispatched"
+        logger.info "->: linux notification dispatched"
       end
     end
 
