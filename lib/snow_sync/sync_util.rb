@@ -75,8 +75,7 @@ module SnowSync
     # Encrypts config credentials based on previous sync
 
     def encrypt_credentials
-      previous_sync = File.directory?("sync")
-      if !previous_sync
+      unless @configs["creds"]["encrypted"]
         configs_path = @configs["conf_path"] + @cf
         configs = YAML::load_file(configs_path)
         # local configuration changes
@@ -84,10 +83,12 @@ module SnowSync
         passb64 = Base64.strict_encode64(@configs["creds"]["pass"])
         configs["creds"]["user"] = userb64
         configs["creds"]["pass"] = passb64
+        configs["creds"]["encrypted"] = true
         File.open(configs_path, 'w') { |f| YAML::dump(configs, f) }
         # object state configuration changes
         @configs["creds"]["user"] = userb64
 	@configs["creds"]["pass"] = passb64
+        @configs["creds"]["encrypted"] = true
       end
     end
 
