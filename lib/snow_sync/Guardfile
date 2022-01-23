@@ -19,7 +19,8 @@ yield_options = {
   run_on_modifications: proc do |logger, _, files|
     @util.push_modifications(files)
     logger.info "!!: #{files}"
-    @util.notify(files, logger)
+    uname = `uname`.chomp.downcase
+    @util.notify(files, uname, logger)
   end,
 
   run_on_additions: proc do |logger, _, files| 
