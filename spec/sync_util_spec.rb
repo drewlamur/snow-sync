@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe "utility object" do
 
-  let! :util do
+  let :util do
     SnowSync::SyncUtil.new(opts = "test")
   end
 
@@ -20,20 +20,20 @@ describe "utility object" do
 
 end
 
-describe "create_directory" do
+describe "#create_directory" do
 
-  let! :util do
+  let :util do
     SnowSync::SyncUtil.new(opts = "test")
   end
 
-  let! :created_time do 
-    util.create_directory("sync")
-    return File.ctime("sync")
-  end
-
   it "should create a directory" do
+    util.create_directory("sync")
     dir = `ls`.split("\n")
     expect(dir.include?("sync")).to eq true
+  end
+
+  let :created_time do
+    File.ctime("sync")
   end
 
   it "should not create directory" do
@@ -44,15 +44,22 @@ describe "create_directory" do
 
 end
 
-describe "create_file" do
+describe "#create_file" do
 
-  let! :util do
+  let :util do
     SnowSync::SyncUtil.new(opts = "test")
   end
 
-  it "should create a file" do
-    FileUtils.mkdir_p("sync")
+  before do 
     FileUtils.mkdir_p("sync/test_sub_dir")
+  end
+
+  after do
+    FileUtils.cd("../..")
+    FileUtils.rm_rf("sync")
+  end
+
+  it "should create a file" do
     json = { "property" => "value" }
     name = "TestClass".snakecase
     path = proc do
@@ -60,13 +67,11 @@ describe "create_file" do
     end
     util.create_file(name, json, &path)
     expect(File.exists?("test_class.js")).to eq true
-    FileUtils.cd("../..")
-    FileUtils.rm_rf("sync")
   end
 
 end
 
-describe "check_required_configs" do
+describe "#check_required_configs" do
 
   let :util do
     SnowSync::SyncUtil.new(opts = "test")
@@ -74,35 +79,40 @@ describe "check_required_configs" do
 
   it "should raise an exception when there is no config path" do
     util.configs["conf_path"] = nil
-    expect{util.check_required_configs}.to raise_error(/Check the configuration path, base url, credentials or table to sync/)
+    expect{util.check_required_configs}.to raise_error(
+      /Check the configuration path, base url, credentials or table to sync/)
   end
 
   it "should raise an exception when there is no base url" do
     util.configs["base_url"] = nil
-    expect{util.check_required_configs}.to raise_error(/Check the configuration path, base url, credentials or table to sync/)
+    expect{util.check_required_configs}.to raise_error(
+      /Check the configuration path, base url, credentials or table to sync/)
   end
 
   it "should raise an exception when there is no username" do
     util.configs["creds"]["user"] = nil
-    expect{util.check_required_configs}.to raise_error(/Check the configuration path, base url, credentials or table to sync/)
+    expect{util.check_required_configs}.to raise_error(
+      /Check the configuration path, base url, credentials or table to sync/)
   end
 
   it "should raise an exception when there is no password" do
     util.configs["creds"]["pass"] = nil
-    expect{util.check_required_configs}.to raise_error(/Check the configuration path, base url, credentials or table to sync/)
+    expect{util.check_required_configs}.to raise_error(
+      /Check the configuration path, base url, credentials or table to sync/)
   end
 
   it "should raise an exception when there are no tables mapped" do
     tables = util.configs["table_map"].keys
     tables.each do |table|
       util.configs["table_map"][table]["table"] = nil
-      expect{util.check_required_configs}.to raise_error(/Check the configuration path, base url, credentials or table to sync/)
+      expect{util.check_required_configs}.to raise_error(
+        /Check the configuration path, base url, credentials or table to sync/)
     end
   end
 
 end
 
-describe "classify" do
+describe "#classify" do
 
   let :util do
     SnowSync::SyncUtil.new(opts = "test")
@@ -117,7 +127,7 @@ describe "classify" do
 
 end
 
-describe "table_lookup" do
+describe "#table_lookup" do
 
   let :util do
     SnowSync::SyncUtil.new(opts = "test")
@@ -131,15 +141,21 @@ describe "table_lookup" do
 
 end
 
-describe "merge_update" do
+describe "#merge_update" do
 
-  let! :util do
+  let :util do
     SnowSync::SyncUtil.new(opts = "test")
   end
 
+  before do
+    FileUtils.mkdir_p("sync/script_include") 
+  end
+
+  after do
+    FileUtils.rm_rf("sync")
+  end
+
   it "should merge script with the configs object" do
-    FileUtils.mkdir_p("sync")
-    FileUtils.mkdir_p("sync/script_include")
     json_resp = "var test = 'test'; \n" +
     "var testing = function(arg) { \n\tgs.print(arg) \n}; \n" +
     "testing('test');"
@@ -153,25 +169,30 @@ describe "merge_update" do
     path = file.split("/")
     type = path[1]
     file = path[2]
-    table_map = util.table_lookup(type, file)
-    util.merge_update(type, file, table_map)
+    util.merge_update(type, file)
     expect(util.configs["table_map"]["script_include"]["mod"] != nil).to eq true
-    FileUtils.rm_rf("sync")
   end
 
 end
 
-describe "setup_sync_directories" do
+describe "#run_setup_and_sync" do
  
-  let! :util do
+  let :util do
     SnowSync::SyncUtil.new(opts = "test")
   end
 
-  it "should setup and synchronize field from the SN instance" do
+  before do
+    util.encrypt_credentials
+  end
+
+  after do
+    FileUtils.rm_rf("sync")
+  end
+
+  it "should setup file locally and sync code from the instance" do
     util.run_setup_and_sync
     file = File.open("sync/script_include/test_class.js")
     expect(file.is_a?(Object)).to eq true
-    FileUtils.rm_rf("sync")
   end
  
 end
@@ -182,23 +203,32 @@ describe "push_modifications - single table configuration" do
     SnowSync::SyncUtil.new(opts = "test")
   end
 
+  before do
+    util.encrypt_credentials
+  end
+ 
+  after do
+    FileUtils.rm_rf("sync")
+  end
+
   it "should push modifications to a configured instance" do
     util.run_setup_and_sync
     file = File.open("sync/script_include/test_class.js", "r+")
     lines = file.readlines
     file.close
-    lines[0] = "// test comment -\n"
+    lines[0] = "// test comment - single push \n"
     newfile = File.new("sync/script_include/test_class.js", "w")
     lines.each do |line|
       newfile.write(line)
     end
     newfile.close
     util.push_modifications(["sync/script_include/test_class.js"])
+    # resync confirms mods were pushed to the instance
     util.run_setup_and_sync
     file = File.open("sync/script_include/test_class.js", "r+")
     lines = file.readlines
     file.close
-    expect(lines[0]).to eq "// test comment -\n"
+    expect(lines[0]).to eq "// test comment - single push \n"
   end
 
 end
@@ -209,7 +239,15 @@ describe "push_modifications - mutli-table configuration" do
     SnowSync::SyncUtil.new(opts = "test")
   end
 
-  it "should sync, update, queue, push, re-sync mods for a configured instance" do
+  before do
+    util.encrypt_credentials
+  end
+       
+  after do
+    FileUtils.rm_rf("sync")
+  end
+
+  it "should push modifications to a configured instance" do
     def do_edit(file, edit)
       file = File.open(file, "r+")
       lines = file.readlines
@@ -229,14 +267,18 @@ describe "push_modifications - mutli-table configuration" do
     end
     util.run_setup_and_sync
     # sys_script_include
-    do_edit("sync/script_include/test_class.js", "// test comment -\n")
+    do_edit(
+      "sync/script_include/test_class.js", "// test comment - multi push 1\n")
     # sys_ui_action
-    do_edit("sync/ui_action/test_action.js", "// test comment -\n")
+    do_edit(
+      "sync/ui_action/test_action.js", "// test comment - multi push 2\n")
     # queued mods, push in sequence
-    util.push_modifications(["sync/script_include/test_class.js", "sync/ui_action/test_action.js"])
+    util.push_modifications(
+      ["sync/script_include/test_class.js", "sync/ui_action/test_action.js"])
+    # resync confirms mods were pushed to the instance
     util.run_setup_and_sync
-    run_check("sync/script_include/test_class.js", "// test comment -\n")
-    run_check("sync/ui_action/test_action.js", "// test comment -\n")
+    run_check("sync/script_include/test_class.js", "// test comment - multi push 1\n")
+    run_check("sync/ui_action/test_action.js", "// test comment - multi push 2\n")
   end
 
 end
